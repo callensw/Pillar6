@@ -17,8 +17,18 @@
 | 2 | **Tool Orchestration** | Tool registration, validation, retries, rate limiting, parallel execution, and circuit breakers |
 | 3 | **Security & Guardrails** | Permissions, input sanitization, output validation, prompt injection detection, cost guardrails, and audit trail |
 | 4 | **Efficiency & Routing** | Multi-model routing, fallback chains, semantic caching, cost tracking, and latency-aware routing |
-| 5 | **Observability** | Distributed tracing, structured logging, Prometheus metrics, execution replay, and anomaly detection |
-| 6 | **Testing & Evaluation** | Mock harnesses, golden dataset eval, LLM-as-judge, regression detection, and chaos testing |
+| 5 | **Observability** | Distributed tracing, structured logging, metric emission, execution replay, and trace export |
+| 6 | **Testing & Evaluation** | Mock harnesses, golden dataset eval, scoring heuristics, regression detection, and chaos testing |
+
+## Agent Patterns
+
+Pillar6 ships with three production-ready agent patterns:
+
+| Pattern | Description |
+|---------|-------------|
+| **ReAct** | Reasoning + Acting loop — think, use tools, observe, repeat |
+| **Plan-Execute** | Plan upfront, execute steps, replan on failure |
+| **Supervisor** | Delegate to specialist sub-agents, synthesise results |
 
 ## Quick Start
 
@@ -29,37 +39,60 @@ pip install pillar6
 ```python
 import asyncio
 from pillar6 import BaseAgent, Pillar6Config
+from pillar6.core.eval import MockLLMAdapter
 
 async def main():
-    config = Pillar6Config()
-    agent = BaseAgent(config=config)
-    result = await agent.run("Summarize the key benefits of agentic AI.")
-    print(result)
+    llm = MockLLMAdapter(
+        responses={"hello": "Hello! How can I help?"},
+        default_response="I'm not sure about that.",
+    )
+    agent = BaseAgent(config=Pillar6Config(), llm=llm)
+    result = await agent.run("hello")
+    print(result)  # "Hello! How can I help?"
 
 asyncio.run(main())
 ```
 
-### With an LLM adapter
+### Using Agent Patterns
 
 ```python
-from pillar6 import BaseAgent, Pillar6Config
-from pillar6.adapters.anthropic import AnthropicAdapter
+from pillar6.agents.patterns import ReActAgent, ReActConfig
 
-async def main():
-    config = Pillar6Config()
-    llm = AnthropicAdapter(api_key="your-api-key")
-    agent = BaseAgent(config=config, llm=llm)
-    result = await agent.run("What are the six pillars of production AI?")
-    print(result)
+agent = ReActAgent(
+    react_config=ReActConfig(max_steps=5),
+    config=Pillar6Config(),
+    llm=llm,
+)
+result = await agent.run("Search for and summarise recent AI news")
 ```
 
-### Scaffold a new project
+## Reference App: Multi-Agent Research Assistant
+
+A complete demo of all six pillars in action. A team of AI agents autonomously
+researches a question and produces a structured report, with a live React
+dashboard for real-time observability.
+
+```
+User Question → Conductor (Supervisor) → Researchers (ReAct) → Analyst (PlanExecute) → Report
+```
+
+<!-- Screenshot placeholder: ![Dashboard](docs/assets/dashboard-screenshot.png) -->
+
+**Run it:**
 
 ```bash
-pillar6 init my-agent
-cd my-agent
-python agent.py
+cd examples/research-assistant
+PYTHONPATH=../../:. python main.py "What are the latest developments in quantum computing?"
 ```
+
+**Start the dashboard:**
+
+```bash
+PYTHONPATH=../../:. python main.py --serve        # API at :8000
+cd dashboard && npm install && npm run dev  # Dashboard at :5173
+```
+
+See [examples/research-assistant/README.md](examples/research-assistant/README.md) for full setup instructions.
 
 ## Installation
 
@@ -77,6 +110,17 @@ cd pillar6
 pip install -e ".[dev]"
 ```
 
+## Documentation
+
+Full documentation is available via MkDocs:
+
+```bash
+pip install -e ".[docs]"
+mkdocs serve    # http://localhost:8000
+```
+
+See the [docs/](docs/) directory for all documentation pages.
+
 ## Development
 
 ```bash
@@ -92,15 +136,14 @@ ruff format .
 
 # Type check
 mypy pillar6
+
+# Build docs
+mkdocs build --strict
 ```
-
-## Documentation
-
-Full documentation is coming in Phase 2. For now, every public class and method includes detailed docstrings.
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see [docs/contributing.md](docs/contributing.md) for guidelines.
 
 ## License
 

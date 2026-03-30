@@ -1,0 +1,62 @@
+[
+  {
+    "input": "What are the latest developments in quantum computing?",
+    "expected_output": "quantum error correction breakthroughs market growth",
+    "rubric": "Should mention error correction, market projections, and major companies",
+    "metadata": {"topic": "quantum", "min_sections": 2}
+  },
+  {
+    "input": "How is climate change affecting the Arctic?",
+    "expected_output": "arctic ice declining faster warming temperature models",
+    "rubric": "Should mention ice loss rates, temperature data, and model predictions",
+    "metadata": {"topic": "climate", "min_sections": 2}
+  },
+  {
+    "input": "What is the current state of renewable energy?",
+    "expected_output": "solar wind cheapest energy costs falling renewable capacity",
+    "rubric": "Should mention cost trends, capacity data, and global adoption",
+    "metadata": {"topic": "energy", "min_sections": 2}
+  },
+  {
+    "input": "What progress has been made in space exploration recently?",
+    "expected_output": "starship mars sample return JWST exoplanets",
+    "rubric": "Should mention SpaceX Starship, Mars missions, and JWST discoveries",
+    "metadata": {"topic": "space", "min_sections": 2}
+  },
+  {
+    "input": "How are AI language models advancing?",
+    "expected_output": "reasoning capabilities agents frameworks safety alignment",
+    "rubric": "Should mention reasoning improvements, agentic AI, and safety research",
+    "metadata": {"topic": "ai", "min_sections": 2}
+  },
+  {
+    "input": "What breakthroughs have occurred in gene therapy?",
+    "expected_output": "CRISPR sickle cell gene therapy approved patients",
+    "rubric": "Should mention CRISPR, sickle cell treatment, and clinical results",
+    "metadata": {"topic": "biotech", "min_sections": 1}
+  },
+  {
+    "input": "What is the status of nuclear fusion energy?",
+    "expected_output": "fusion net energy gain NIF power plant",
+    "rubric": "Should mention net energy gain, NIF results, and private fusion companies",
+    "metadata": {"topic": "fusion", "min_sections": 1}
+  },
+  {
+    "input": "How is carbon capture technology scaling up?",
+    "expected_output": "direct air capture CO2 removal costs scaling",
+    "rubric": "Should mention DAC facilities, cost trends, and corporate buyers",
+    "metadata": {"topic": "carbon", "min_sections": 1}
+  },
+  {
+    "input": "What are the latest developments in AI safety?",
+    "expected_output": "alignment interpretability constitutional AI regulation",
+    "rubric": "Should mention alignment techniques, interpretability, and regulation",
+    "metadata": {"topic": "ai_safety", "min_sections": 1}
+  },
+  {
+    "input": "Compare the investment landscape for quantum computing and AI",
+    "expected_output": "investment market billion quantum artificial intelligence",
+    "rubric": "Should compare investment levels in both fields with specific numbers",
+    "metadata": {"topic": "comparison", "min_sections": 2}
+  }
+]

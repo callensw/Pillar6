@@ -1,0 +1,9 @@
+# Core framework (use -e ../../ during development)
+pillar6
+
+# Server mode dependencies
+fastapi>=0.100
+uvicorn>=0.23
+
+# HTTP client (used by pillar6 and Supabase storage)
+httpx>=0.25

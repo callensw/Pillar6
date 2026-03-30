@@ -1,0 +1,93 @@
+[
+  {
+    "title": "Breakthroughs in Quantum Error Correction — 2025 Update",
+    "url": "https://example.com/quantum-error-correction-2025",
+    "snippet": "Researchers at MIT and Google have achieved a major milestone in quantum error correction, demonstrating a logical qubit with error rates below the threshold needed for practical computation.",
+    "keywords": ["quantum", "computing", "qubit", "error correction"],
+    "content": "Quantum computing took a significant leap forward in 2025 with breakthroughs in error correction. Teams at MIT and Google demonstrated logical qubits operating below the critical error threshold of 10^-6, a milestone long considered necessary for practical quantum computation.\n\nThe key innovation was a new surface code architecture that requires fewer physical qubits per logical qubit — down from roughly 1,000 to just 137. This dramatic reduction makes near-term quantum advantage far more feasible.\n\nIBM's Condor processor, with 1,121 superconducting qubits, has been running stable quantum circuits for over 72 hours continuously, a record that demonstrates the improving reliability of quantum hardware.\n\nExperts predict that fault-tolerant quantum computers capable of breaking current encryption could arrive by 2030, accelerating the urgency around post-quantum cryptography standards."
+  },
+  {
+    "title": "Quantum Computing Market to Reach $125B by 2030",
+    "url": "https://example.com/quantum-market-forecast",
+    "snippet": "Industry analysts project the quantum computing market will grow from $8.6 billion in 2024 to over $125 billion by 2030, driven by pharmaceutical, financial, and logistics applications.",
+    "keywords": ["quantum", "computing", "market", "industry", "investment"],
+    "content": "The quantum computing industry is experiencing explosive growth. Market analysts at McKinsey and BCG project the sector will expand from $8.6 billion in 2024 to between $100-125 billion by 2030.\n\nKey growth drivers include drug discovery (where quantum simulation can model molecular interactions 1000x faster), financial portfolio optimization, supply chain logistics, and materials science.\n\nMajor investments include Google's $5 billion Quantum AI campus, IBM's $2 billion quantum roadmap, and China's $15 billion national quantum initiative. Startups like IonQ, Rigetti, and PsiQuantum have collectively raised over $3 billion in venture funding.\n\nThe pharmaceutical industry alone could see $50 billion in value from quantum-accelerated drug discovery by 2035, according to a recent Boston Consulting Group report."
+  },
+  {
+    "title": "Climate Change: Arctic Ice Loss Accelerating Beyond Models",
+    "url": "https://example.com/arctic-ice-2025",
+    "snippet": "New satellite data shows Arctic sea ice declining 30% faster than climate models predicted, with an ice-free summer Arctic now expected by 2035.",
+    "keywords": ["climate", "change", "arctic", "ice", "warming", "temperature"],
+    "content": "Arctic sea ice is disappearing faster than even the most pessimistic climate models projected. New satellite measurements from ESA's CryoSat-3 mission reveal that multi-year ice volume has declined by 30% more than IPCC AR6 models predicted.\n\nThe data suggests an ice-free Arctic summer could occur as early as 2035 — a full decade ahead of most projections. This has cascading effects on global weather patterns, including disruption of the jet stream, which drives extreme weather events in the Northern Hemisphere.\n\nDr. Jennifer Francis of the Woodwell Climate Research Center notes: 'The Arctic is warming four times faster than the global average. What happens in the Arctic doesn't stay in the Arctic — it affects weather patterns for billions of people.'\n\nGlobal average temperatures have risen 1.3°C above pre-industrial levels, and the current trajectory suggests 2.5-3.0°C of warming by 2100 without dramatic emission cuts."
+  },
+  {
+    "title": "Renewable Energy Now Cheapest Power Source Globally",
+    "url": "https://example.com/renewable-energy-costs-2025",
+    "snippet": "Solar and wind energy are now the cheapest sources of new electricity generation in over 90% of the world, with costs continuing to fall.",
+    "keywords": ["climate", "energy", "solar", "wind", "renewable", "clean"],
+    "content": "The International Energy Agency's 2025 World Energy Outlook confirms that solar photovoltaic and onshore wind are now the cheapest sources of new electricity generation in countries representing over 90% of global power demand.\n\nSolar costs have fallen 90% since 2010 and continue to drop at 8-10% annually. The global average levelized cost of solar is now $24/MWh, compared to $49/MWh for natural gas and $65/MWh for coal.\n\nBattery storage costs have also plummeted, with lithium-ion prices reaching $100/kWh — the threshold long considered necessary for grid-scale viability. New sodium-ion batteries promise to push costs even lower.\n\nChina installed 250 GW of solar in 2024 alone — more than the entire world installed in 2022. Global renewable capacity is now 4,500 GW, generating 35% of the world's electricity."
+  },
+  {
+    "title": "Carbon Capture Technology Scales Up",
+    "url": "https://example.com/carbon-capture-scaling",
+    "snippet": "Direct air capture facilities are scaling rapidly, with the world's largest plant in Iceland now removing 36,000 tons of CO2 per year.",
+    "keywords": ["climate", "carbon", "capture", "emissions", "technology"],
+    "content": "Carbon capture and storage technology is finally scaling beyond pilot projects. Climeworks' Mammoth plant in Iceland, the world's largest direct air capture facility, now removes 36,000 tons of CO2 per year — a 10x increase from its predecessor.\n\nThe cost of direct air capture has fallen from $600/ton in 2020 to approximately $250/ton in 2025, with projections suggesting $100/ton is achievable by 2030 at scale.\n\nMajor corporate buyers including Microsoft, Stripe, and Shopify have signed long-term carbon removal contracts totaling over $2 billion, providing the demand signal needed for further investment.\n\nPoint-source capture at industrial facilities is also growing, with 45 large-scale projects now operational worldwide, collectively capturing 50 million tons of CO2 annually. However, scientists note this remains a fraction of the 37 billion tons emitted globally each year."
+  },
+  {
+    "title": "SpaceX Starship Completes First Orbital Cargo Mission",
+    "url": "https://example.com/starship-orbital-mission",
+    "snippet": "SpaceX's Starship successfully delivered 100 tons of cargo to orbit, demonstrating the fully reusable launch system that could revolutionize space access.",
+    "keywords": ["space", "spacex", "starship", "rocket", "launch", "orbit"],
+    "content": "SpaceX achieved a historic milestone with the first orbital cargo delivery by Starship, placing 100 metric tons of payload into low Earth orbit — more than any rocket in history.\n\nBoth the Super Heavy booster and Starship upper stage were recovered and inspected for reuse, marking the first fully reusable orbital-class launch system. SpaceX estimates this will reduce launch costs to approximately $10 per kilogram to orbit, compared to $2,700/kg for the Space Shuttle.\n\nThe implications are staggering: at $10/kg, launching a 100kg satellite costs just $1,000. This opens space to entirely new categories of applications, from manufacturing in microgravity to large-scale space solar power.\n\nNASA has contracted Starship for the Artemis III lunar landing mission, and SpaceX is developing a tanker variant for orbital refueling to support deep space missions."
+  },
+  {
+    "title": "Mars Sample Return Mission Gets New Timeline",
+    "url": "https://example.com/mars-sample-return-2025",
+    "snippet": "NASA and ESA have restructured the Mars Sample Return mission with a new 2031 launch date, using commercial partnerships to reduce costs.",
+    "keywords": ["space", "mars", "nasa", "exploration", "mission"],
+    "content": "NASA and the European Space Agency announced a restructured Mars Sample Return mission with a target launch date of 2031, three years earlier than the previous timeline and at significantly reduced cost.\n\nThe revised plan leverages commercial partnerships — SpaceX will provide the Earth Return Vehicle launch, while Rocket Lab will build the orbital capture system. This reduces the estimated cost from $11 billion to $7 billion.\n\nThe Perseverance rover has already collected and cached 24 sample tubes at three locations in Jezero Crater. These samples may contain evidence of ancient microbial life from when Mars had liquid water 3.5 billion years ago.\n\nDr. Meenakshi Wadhwa, the mission's principal scientist, called the samples 'the most scientifically valuable material ever collected from another planet. Returning them to Earth will be one of the greatest achievements in the history of exploration.'"
+  },
+  {
+    "title": "James Webb Telescope Discovers New Class of Exoplanets",
+    "url": "https://example.com/jwst-exoplanets-discovery",
+    "snippet": "JWST has identified a new class of 'steam worlds' — exoplanets with thick water vapor atmospheres that could support life in their upper cloud layers.",
+    "keywords": ["space", "exoplanet", "telescope", "jwst", "discovery", "life"],
+    "content": "The James Webb Space Telescope has identified a previously unknown class of exoplanets dubbed 'steam worlds' — rocky planets with dense water vapor atmospheres where temperatures and pressures in the upper cloud layers could support microbial life.\n\nThe discovery, published in Nature, analyzed the atmospheres of 12 exoplanets in the habitable zones of their stars. Five showed clear signatures of water vapor, carbon dioxide, and intriguingly, potential biosignature gases including dimethyl sulfide.\n\nTeam lead Dr. Nikku Madhusudhan of Cambridge University stated: 'These steam worlds represent an entirely new category in our understanding of habitable environments. Life doesn't necessarily need a planet surface — it could thrive in atmospheric layers.'\n\nThe findings expand the estimated number of potentially habitable worlds in the Milky Way from roughly 300 million to over 2 billion."
+  },
+  {
+    "title": "GPT-5 and the New Frontier of AI Reasoning",
+    "url": "https://example.com/gpt5-ai-reasoning",
+    "snippet": "OpenAI's GPT-5 demonstrates PhD-level reasoning across science and mathematics, scoring in the 90th percentile on professional licensing exams.",
+    "keywords": ["ai", "artificial intelligence", "gpt", "reasoning", "language model"],
+    "content": "OpenAI's GPT-5, released in early 2025, represents a step change in AI reasoning capabilities. The model scores in the 90th percentile on medical licensing exams (USMLE), the bar exam, and graduate-level mathematics competitions.\n\nKey innovations include improved chain-of-thought reasoning, better calibration (the model knows what it doesn't know), and the ability to use tools and APIs natively within its reasoning process.\n\nBenchmark results show GPT-5 solving 72% of International Mathematical Olympiad problems and generating novel research hypotheses that expert panels rated as 'genuinely insightful' 45% of the time.\n\nHowever, critics note persistent challenges: the model still hallucinates on obscure topics, struggles with long-horizon planning beyond 20 steps, and shows brittleness when encountering truly novel problem types. The AI safety community has raised concerns about the model's persuasive capabilities in social engineering scenarios."
+  },
+  {
+    "title": "Claude and the Rise of Agentic AI Frameworks",
+    "url": "https://example.com/agentic-ai-frameworks",
+    "snippet": "Anthropic's Claude models are powering a new generation of AI agent frameworks, with structured tool use and safety guardrails built in.",
+    "keywords": ["ai", "artificial intelligence", "claude", "agent", "framework"],
+    "content": "The AI industry is rapidly shifting from simple chatbots to autonomous agent systems. Anthropic's Claude models, with their native tool use capabilities and constitutional AI safety training, have become a popular foundation for agentic applications.\n\nFrameworks like Pillar6, LangGraph, and CrewAI are enabling developers to build multi-agent systems where specialized AI agents collaborate on complex tasks — from research and analysis to code generation and project management.\n\nKey capabilities driving adoption include: reliable function calling with structured outputs, long context windows (200K+ tokens), strong instruction following, and built-in refusal of harmful requests.\n\nEnterprise adoption is accelerating, with 67% of Fortune 500 companies now running AI agent systems in production, up from 12% in 2023. The most common use cases are customer service automation, internal knowledge management, and code review."
+  },
+  {
+    "title": "AI Safety: Alignment Research Makes Progress",
+    "url": "https://example.com/ai-safety-alignment-2025",
+    "snippet": "New techniques in constitutional AI and mechanistic interpretability are making AI systems more transparent and controllable.",
+    "keywords": ["ai", "safety", "alignment", "interpretability"],
+    "content": "AI safety research has made significant strides in 2025, with breakthroughs in both alignment methodology and interpretability tools.\n\nAnthropic's constitutional AI approach has been refined to produce models that are simultaneously more helpful and more resistant to misuse. New red-teaming methodologies have identified and patched vulnerability classes that affect all major language models.\n\nMechanistic interpretability — understanding what's happening inside neural networks — has progressed to the point where researchers can identify and modify specific behaviors in mid-sized models. Teams at Anthropic and DeepMind have mapped 'safety circuits' in their models that activate when potentially harmful content is being generated.\n\nRegulatory frameworks are also maturing. The EU AI Act is now in effect, the US has executive orders on AI safety, and the UK AI Safety Institute has expanded to include testing of frontier models before release.\n\nDespite progress, researchers warn that alignment for superintelligent systems remains an unsolved problem and that current techniques may not scale to more capable future models."
+  },
+  {
+    "title": "CRISPR Gene Therapy Cures Sickle Cell Disease",
+    "url": "https://example.com/crispr-sickle-cell",
+    "snippet": "The first CRISPR-based gene therapy has been approved and is showing remarkable results, with 94% of sickle cell patients achieving disease-free status.",
+    "keywords": ["crispr", "gene", "therapy", "medicine", "health", "biotech"],
+    "content": "The FDA-approved CRISPR gene therapy Casgevy has transformed the treatment landscape for sickle cell disease. Clinical data from the first 500 treated patients shows 94% achieving complete disease-free status with no vaso-occlusive crises in the two years following treatment.\n\nThe therapy works by editing the patient's own stem cells to produce fetal hemoglobin, which doesn't sickle. The one-time treatment replaces a lifetime of blood transfusions and pain management.\n\nVertex Pharmaceuticals, which developed Casgevy, reports that the treatment cost of $2.2 million per patient is offset by the estimated $6 million lifetime cost of managing severe sickle cell disease.\n\nResearchers are now applying similar CRISPR approaches to beta-thalassemia, Duchenne muscular dystrophy, and certain inherited blindness conditions. The era of gene therapy as a routine medical intervention has arrived."
+  },
+  {
+    "title": "Nuclear Fusion Achieves Net Energy Gain Repeatedly",
+    "url": "https://example.com/fusion-net-energy-2025",
+    "snippet": "The National Ignition Facility has achieved net energy gain in 8 consecutive fusion shots, moving fusion power from experimental to engineering phase.",
+    "keywords": ["fusion", "energy", "nuclear", "physics", "power"],
+    "content": "Nuclear fusion crossed a critical milestone as the National Ignition Facility achieved net energy gain in 8 consecutive fusion experiments, producing 1.5x more energy than the laser energy used to trigger the reaction.\n\nThis consistency proves that fusion ignition is not a fluke but a reproducible phenomenon that can be engineered. The Department of Energy has announced a $4 billion program to build a prototype fusion power plant by 2035.\n\nPrivate fusion companies are also making progress. Commonwealth Fusion Systems' SPARC tokamak achieved first plasma, and TAE Technologies demonstrated stable plasma confinement for over 30 milliseconds.\n\nFusion power plants would produce enormous amounts of clean energy with no long-lived radioactive waste and zero carbon emissions. The fuel — deuterium from seawater and lithium — is essentially unlimited. A single gallon of seawater contains enough deuterium to produce energy equivalent to 300 gallons of gasoline."
+  }
+]
