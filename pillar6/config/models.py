@@ -19,6 +19,17 @@ class ContextConfig(BaseModel):
     )
     max_messages: int = Field(default=100, ge=1)
     enable_persistence: bool = False
+    # Priority budget allocation (fraction of total)
+    system_budget_fraction: float = Field(default=0.20, ge=0.0, le=1.0)
+    recent_budget_fraction: float = Field(default=0.40, ge=0.0, le=1.0)
+    retrieved_budget_fraction: float = Field(default=0.25, ge=0.0, le=1.0)
+    ephemeral_budget_fraction: float = Field(default=0.15, ge=0.0, le=1.0)
+    # Compression settings
+    compression_keep_recent: int = Field(
+        default=5,
+        ge=1,
+        description="Number of most-recent messages to keep during compression.",
+    )
 
 
 class ToolConfig(BaseModel):
@@ -31,6 +42,7 @@ class ToolConfig(BaseModel):
     max_concurrency: int = Field(default=5, ge=1)
     circuit_breaker_threshold: int = Field(default=5, ge=1)
     circuit_breaker_reset_ms: float = Field(default=60_000.0, ge=0.0)
+    cache_ttl_seconds: float = Field(default=0.0, ge=0.0)
 
 
 class SecurityConfig(BaseModel):
@@ -43,6 +55,7 @@ class SecurityConfig(BaseModel):
     token_budget_per_agent: int = Field(default=1_000_000, ge=0)
     allowed_tools: list[str] = Field(default_factory=list)
     blocked_patterns: list[str] = Field(default_factory=list)
+    default_deny: bool = True
 
 
 class RouterConfig(BaseModel):

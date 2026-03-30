@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import enum
+from datetime import UTC, datetime
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -86,6 +87,8 @@ class ToolResult(BaseModel):
     error: str | None = None
     duration_ms: float = 0.0
     success: bool = True
+    retry_count: int = 0
+    cached: bool = False
 
 
 class ToolHealth(BaseModel):
@@ -95,6 +98,11 @@ class ToolHealth(BaseModel):
     healthy: bool = True
     last_check_ms: float = 0.0
     message: str = ""
+    circuit_breaker_state: CircuitBreakerState = CircuitBreakerState.CLOSED
+    total_calls: int = 0
+    total_failures: int = 0
+    avg_latency_ms: float = 0.0
+    cache_hit_rate: float = 0.0
 
 
 class RegisteredTool(BaseModel, arbitrary_types_allowed=True):
@@ -181,6 +189,16 @@ class RouteConstraints(BaseModel):
     required_capabilities: list[str] = Field(default_factory=list)
 
 
+class CostEntry(BaseModel):
+    """A single cost tracking entry."""
+
+    timestamp: float = 0.0
+    agent_id: str = ""
+    model: str = ""
+    tokens: int = 0
+    cost_usd: float = 0.0
+
+
 class CostSummary(BaseModel):
     """Summary of costs incurred by agents."""
 
@@ -188,6 +206,19 @@ class CostSummary(BaseModel):
     total_cost_usd: float = 0.0
     by_model: dict[str, float] = Field(default_factory=dict)
     by_agent: dict[str, float] = Field(default_factory=dict)
+    entries: list[CostEntry] = Field(default_factory=list)
+
+
+class ModelProfile(BaseModel):
+    """Profile for a model used in routing decisions."""
+
+    name: str
+    tier: ModelTier = ModelTier.BALANCED
+    cost_per_1k_input: float = 0.003
+    cost_per_1k_output: float = 0.015
+    avg_latency_ms: float = 1000.0
+    max_tokens: int = 4096
+    provider: str = ""
 
 
 class TraceContext(BaseModel):
@@ -197,17 +228,44 @@ class TraceContext(BaseModel):
     trace_id: str = ""
     parent_id: str | None = None
     start_time_ms: float = 0.0
+    end_time_ms: float = 0.0
+    total_duration_ms: float = 0.0
+    completed: bool = False
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class TraceEvent(BaseModel):
     """A single event in a trace."""
 
+    event_id: str = ""
     event_type: str
     timestamp_ms: float = 0.0
     trace_id: str = ""
+    agent_id: str = ""
+    parent_event_id: str | None = None
     data: dict[str, Any] = Field(default_factory=dict)
     message: str = ""
+
+
+class LogEntry(BaseModel):
+    """A structured log entry."""
+
+    timestamp: str = ""
+    level: str = "INFO"
+    message: str = ""
+    agent_id: str = ""
+    workflow_id: str = ""
+    trace_id: str = ""
+    data: dict[str, Any] = Field(default_factory=dict)
+
+
+class AuditEntry(BaseModel):
+    """An entry in the security audit trail."""
+
+    timestamp: str = ""
+    agent_id: str = ""
+    action: str = ""
+    details: dict[str, Any] = Field(default_factory=dict)
 
 
 class EvalResult(BaseModel):
@@ -224,6 +282,38 @@ class EvalDataset(BaseModel):
 
     name: str = ""
     items: list[EvalItem] = Field(default_factory=list)
+
+    @classmethod
+    def from_list(cls, cases: list[dict[str, Any]], name: str = "") -> EvalDataset:
+        """Create a dataset from a list of dicts.
+
+        Args:
+            cases: List of dicts with 'input' and optional 'expected_output', 'rubric', 'metadata'.
+            name: Dataset name.
+
+        Returns:
+            EvalDataset instance.
+        """
+        items = [EvalItem(**case) for case in cases]
+        return cls(name=name, items=items)
+
+    @classmethod
+    def from_json(cls, path: str) -> EvalDataset:
+        """Load a dataset from a JSON file.
+
+        Args:
+            path: Path to a JSON file containing a list of eval cases or a dataset object.
+
+        Returns:
+            EvalDataset instance.
+        """
+        import json
+        from pathlib import Path
+
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        if isinstance(data, list):
+            return cls.from_list(data, name=Path(path).stem)
+        return cls.model_validate(data)
 
 
 class EvalItem(BaseModel):
@@ -242,6 +332,10 @@ class EvalReport(BaseModel):
     results: list[EvalResult] = Field(default_factory=list)
     avg_score: float = 0.0
     pass_rate: float = 0.0
+    total_cases: int = 0
+    passed: int = 0
+    failed: int = 0
+    total_duration_ms: float = 0.0
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -253,4 +347,12 @@ class ComparisonReport(BaseModel):
     score_diff: float = 0.0
     pass_rate_diff: float = 0.0
     improved: bool = False
+    improved_cases: int = 0
+    regressed_cases: int = 0
+    unchanged_cases: int = 0
     details: dict[str, Any] = Field(default_factory=dict)
+
+
+def _now_iso() -> str:
+    """Return the current time as an ISO 8601 string."""
+    return datetime.now(UTC).isoformat()

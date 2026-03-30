@@ -30,6 +30,15 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+class Pillar6Error(Exception):
+    """Base exception for Pillar6 agent errors."""
+
+    def __init__(self, message: str, agent_id: str = "", workflow_id: str = "") -> None:
+        self.agent_id = agent_id
+        self.workflow_id = workflow_id
+        super().__init__(message)
+
+
 class BaseAgent:
     """Core agent that orchestrates all six Pillar6 pillars.
 
@@ -102,13 +111,16 @@ class BaseAgent:
     async def run(self, task: str) -> str:
         """Execute the full agent lifecycle for a given task.
 
-        Lifecycle: INIT -> CONTEXT LOAD -> PLAN -> EXECUTE -> OBSERVE -> RESPOND
+        Lifecycle: INIT -> CONTEXT LOAD -> SECURITY -> ROUTE -> EXECUTE -> OBSERVE -> RESPOND
 
         Args:
             task: The user task / instruction to process.
 
         Returns:
             The agent's final text response.
+
+        Raises:
+            Pillar6Error: If an unrecoverable error occurs during the lifecycle.
         """
         workflow_id = uuid.uuid4().hex[:12]
         trace_ctx = self.observability.start_trace(workflow_id)
@@ -187,8 +199,51 @@ class BaseAgent:
                 TraceEvent(
                     event_type="llm_response",
                     message=f"Received response from {response.model}",
+                    data={"tokens": response.usage.total_tokens},
                 ),
             )
+
+            # --- HANDLE TOOL CALLS ---
+            if response.tool_calls:
+                for tc in response.tool_calls:
+                    # Check permissions
+                    allowed = await self.guardrails.check_permissions(self._agent_id, tc.tool_name)
+                    if not allowed:
+                        self.observability.add_event(
+                            trace_ctx,
+                            TraceEvent(
+                                event_type="permission_denied",
+                                message=f"Permission denied for tool {tc.tool_name}",
+                            ),
+                        )
+                        continue
+
+                    from pillar6.types import ExecutionContext
+
+                    tool_result = await self.tool_executor.execute(
+                        tc.tool_name,
+                        tc.arguments,
+                        ExecutionContext(
+                            agent_id=self._agent_id,
+                            workflow_id=workflow_id,
+                            trace_id=trace_ctx.trace_id,
+                        ),
+                    )
+                    self.observability.add_event(
+                        trace_ctx,
+                        TraceEvent(
+                            event_type="tool_call",
+                            message=(
+                                f"Tool {tc.tool_name}: "
+                                f"{'success' if tool_result.success else 'failed'}"
+                            ),
+                            data={
+                                "tool_name": tc.tool_name,
+                                "success": tool_result.success,
+                                "duration_ms": tool_result.duration_ms,
+                            },
+                        ),
+                    )
 
             # --- COST TRACKING ---
             await self.router.track_cost(self._agent_id, response.model, response.usage)
@@ -220,6 +275,20 @@ class BaseAgent:
             )
 
             return response.content
+
+        except Exception as exc:
+            # Log the error and re-raise as Pillar6Error
+            self.observability.add_event(
+                trace_ctx,
+                TraceEvent(
+                    event_type="error",
+                    message=f"Agent error: {exc}",
+                    data={"error_type": type(exc).__name__},
+                ),
+            )
+            if isinstance(exc, Pillar6Error):
+                raise
+            raise Pillar6Error(str(exc), agent_id=self._agent_id, workflow_id=workflow_id) from exc
 
         finally:
             self.observability.end_trace(trace_ctx)

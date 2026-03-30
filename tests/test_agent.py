@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from pillar6.agents.base import BaseAgent
+from pillar6.agents.base import BaseAgent, Pillar6Error
 from pillar6.config.models import AgentConfig, Pillar6Config, SecurityConfig
 
 
@@ -39,19 +39,16 @@ async def test_agent_input_blocked() -> None:
 
 async def test_agent_run_traces_lifecycle(agent: BaseAgent) -> None:
     await agent.run("Test task")
-    # The default observability layer is in-memory; verify at least one trace exists
     from pillar6.core.observability import DefaultObservabilityLayer
 
     obs = agent.observability
     assert isinstance(obs, DefaultObservabilityLayer)
-    # There should be traces stored
     assert len(obs._traces) > 0
 
 
 async def test_agent_run_tracks_cost(agent: BaseAgent) -> None:
     await agent.run("Cost tracking test")
     summary = await agent.router.get_cost_summary(agent.agent_id)
-    # In echo mode, usage is 0 but the call should not error
     assert summary.total_tokens >= 0
 
 
@@ -61,5 +58,33 @@ async def test_agent_run_audits_action(agent: BaseAgent) -> None:
 
     guardrails = agent.guardrails
     assert isinstance(guardrails, DefaultGuardrailEngine)
-    assert len(guardrails._audit_log) >= 1
-    assert guardrails._audit_log[-1]["action"] == "agent_run"
+    log = guardrails.get_audit_log(agent.agent_id)
+    assert len(log) >= 1
+    assert log[-1].action == "agent_run"
+
+
+async def test_agent_with_mock_llm() -> None:
+    from pillar6.core.eval import MockLLMAdapter
+
+    config = Pillar6Config()
+    llm = MockLLMAdapter(responses={"hello": "world"}, default_response="default")
+    agent = BaseAgent(config=config, llm=llm)
+    result = await agent.run("hello")
+    assert result == "world"
+
+
+async def test_agent_error_handling() -> None:
+    """Agent should wrap unexpected errors in Pillar6Error."""
+    from unittest.mock import AsyncMock
+
+    from pillar6.core.eval import MockLLMAdapter
+
+    config = Pillar6Config()
+    llm = MockLLMAdapter()
+    agent = BaseAgent(config=config, llm=llm)
+
+    # Break the router to cause an error
+    agent.router.route = AsyncMock(side_effect=RuntimeError("routing failed"))  # type: ignore[method-assign]
+
+    with pytest.raises(Pillar6Error, match="routing failed"):
+        await agent.run("test")
