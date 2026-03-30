@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68.0", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pillar6"
+version = "0.1.0"
+description = "The production framework for agentic AI. Six pillars. Zero guesswork."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "Pillar6 Contributors" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2.0",
+    "httpx>=0.25",
+    "typer>=0.9",
+]
+
+[project.scripts]
+pillar6 = "pillar6.cli.main:app"
+
+[project.urls]
+Homepage = "https://github.com/callensw/pillar6"
+Documentation = "https://github.com/callensw/pillar6#readme"
+Repository = "https://github.com/callensw/pillar6"
+Issues = "https://github.com/callensw/pillar6/issues"
+
+[tool.setuptools.packages.find]
+include = ["pillar6*"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "A", "SIM", "TCH"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+    "mypy>=1.10",
+]
