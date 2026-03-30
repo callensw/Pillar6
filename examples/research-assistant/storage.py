@@ -110,6 +110,8 @@ class SupabaseStorage(Storage):
     """
 
     def __init__(self, url: str, key: str) -> None:
+        import httpx
+
         self._url = url.rstrip("/")
         self._headers = {
             "apikey": key,
@@ -117,17 +119,15 @@ class SupabaseStorage(Storage):
             "Content-Type": "application/json",
             "Prefer": "return=representation",
         }
+        self._client = httpx.AsyncClient(timeout=30.0)
 
     async def _request(self, method: str, table: str, **kwargs: Any) -> Any:
-        import httpx
-
         url = f"{self._url}/rest/v1/{table}"
-        async with httpx.AsyncClient() as client:
-            resp = await client.request(method, url, headers=self._headers, **kwargs)
-            resp.raise_for_status()
-            if resp.content:
-                return resp.json()
-            return None
+        resp = await self._client.request(method, url, headers=self._headers, **kwargs)
+        resp.raise_for_status()
+        if resp.content:
+            return resp.json()
+        return None
 
     async def create_job(self, question: str) -> ResearchJob:
         job_id = uuid.uuid4().hex[:12]

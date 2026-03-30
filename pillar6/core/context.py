@@ -132,12 +132,6 @@ class _AgentContext:
         return msgs
 
 
-# Summarizer callable type hint — users can supply an LLM-based summarizer.
-# Signature: (messages: list[Message]) -> str
-# None means use a simple placeholder instead.
-SummarizerFn = None  # placeholder for the type
-
-
 class DefaultContextManager(ContextManager):
     """In-memory context manager with priority buckets and sliding-window compression.
 

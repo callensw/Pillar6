@@ -254,8 +254,16 @@ class DefaultObservabilityLayer(ObservabilityLayer):
 
         trace_id = trace_ctx.trace_id if trace_ctx else ""
 
-        # Collect relevant metrics and logs
-        relevant_metrics = [m.to_dict() for m in self._metrics]
+        # Collect metrics emitted during this trace's time window
+        start = trace_ctx.start_time_ms / 1000 if trace_ctx else 0
+        end = trace_ctx.end_time_ms / 1000 if trace_ctx and trace_ctx.end_time_ms else float("inf")
+        relevant_metrics = [
+            m.to_dict()
+            for m in self._metrics
+            if start <= m.timestamp <= end
+            or m.tags.get("workflow_id") == workflow_id
+            or m.tags.get("trace_id") == trace_id
+        ]
         relevant_logs = [
             entry.model_dump()
             for entry in self._logs

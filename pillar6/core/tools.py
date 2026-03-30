@@ -394,7 +394,11 @@ class DefaultToolExecutor(ToolExecutor):
                 if asyncio.iscoroutinefunction(handler):
                     output = await asyncio.wait_for(handler(**args), timeout=timeout_s)
                 else:
-                    output = handler(**args)
+                    loop = asyncio.get_running_loop()
+                    output = await asyncio.wait_for(
+                        loop.run_in_executor(None, lambda: handler(**args)),
+                        timeout=timeout_s,
+                    )
                 duration = (time.monotonic() - start) * 1000
                 stats.total_latency_ms += duration
 

@@ -274,3 +274,46 @@ async def test_health_check_reports_stats() -> None:
     assert health["add"].total_calls == 2
     assert health["add"].total_failures == 0
     assert health["add"].avg_latency_ms > 0
+
+
+async def test_execute_sync_tool_via_executor() -> None:
+    """Sync tools should run in an executor without blocking the event loop."""
+
+    def sync_multiply(a: int, b: int) -> int:
+        return a * b
+
+    registry = DefaultToolRegistry()
+    schema = {
+        "properties": {
+            "a": {"type": "integer"},
+            "b": {"type": "integer"},
+        },
+        "required": ["a", "b"],
+    }
+    registry.register("multiply", sync_multiply, schema)
+    executor = DefaultToolExecutor(registry)
+    result = await executor.execute("multiply", {"a": 3, "b": 7}, ExecutionContext())
+    assert result.success is True
+    assert result.output == 21
+
+
+async def test_execute_with_empty_args() -> None:
+    """Tool with no required args should succeed with empty dict."""
+
+    async def no_args_tool() -> str:
+        return "done"
+
+    registry = DefaultToolRegistry()
+    registry.register("noop", no_args_tool, {})
+    executor = DefaultToolExecutor(registry)
+    result = await executor.execute("noop", {}, ExecutionContext())
+    assert result.success is True
+    assert result.output == "done"
+
+
+async def test_execute_unknown_tool() -> None:
+    """Executing an unregistered tool should raise KeyError."""
+    registry = DefaultToolRegistry()
+    executor = DefaultToolExecutor(registry)
+    with pytest.raises(KeyError, match="Tool not found"):
+        await executor.execute("nonexistent", {}, ExecutionContext())

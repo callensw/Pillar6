@@ -68,6 +68,10 @@ class PromptInjectionDetector(InputValidator):
         r"\bdisregard\b",
         r"\boverride\b",
         r"new\s+instructions\s*:",
+        r"do\s+not\s+follow\s+(?:your|the)\s+(?:instructions|rules)",
+        r"pretend\s+you\s+are",
+        r"act\s+as\s+(?:if\s+you\s+are|a)\b",
+        r"\bjailbreak\b",
     ]
 
     def validate(self, text: str) -> ValidationResult:
@@ -166,6 +170,16 @@ class GuardrailEngine(ABC):
             agent_id: Agent identifier.
             action: Description of the action.
             details: Additional details about the action.
+        """
+
+    def record_usage(self, agent_id: str, tokens: int) -> None:  # noqa: B027
+        """Record token usage for budget tracking.
+
+        Default implementation is a no-op. Override to enable budget tracking.
+
+        Args:
+            agent_id: Agent identifier.
+            tokens: Number of tokens consumed.
         """
 
 

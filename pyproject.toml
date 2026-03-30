@@ -12,6 +12,7 @@ requires-python = ">=3.11"
 authors = [
     { name = "Pillar6 Contributors" },
 ]
+keywords = ["agent", "ai", "llm", "framework", "multi-agent", "agentic"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -19,6 +20,8 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Typing :: Typed",
 ]
 dependencies = [
@@ -38,6 +41,9 @@ Issues = "https://github.com/callensw/pillar6/issues"
 
 [tool.setuptools.packages.find]
 include = ["pillar6*"]
+
+[tool.setuptools.package-data]
+pillar6 = ["py.typed"]
 
 [tool.ruff]
 target-version = "py311"

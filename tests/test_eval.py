@@ -234,3 +234,26 @@ async def test_chaos_wrapper_sync_handler() -> None:
     wrapper = ChaosToolWrapper(sync_tool, failure_rate=0.0, delay_rate=0.0)
     result = await wrapper(x=4)
     assert result == 12
+
+
+async def test_judge_empty_strings(suite: DefaultEvalSuite) -> None:
+    """Judging empty output against empty expected should be an exact match."""
+    result = await suite.judge("", "")
+    assert result.score == pytest.approx(1.0)
+
+
+async def test_judge_unicode(suite: DefaultEvalSuite) -> None:
+    """Unicode content should be handled correctly."""
+    result = await suite.judge("caf\u00e9 \U0001f30d", "caf\u00e9 \U0001f30d")
+    assert result.passed is True
+    assert result.score == pytest.approx(1.0)
+
+
+async def test_mock_adapter_empty_messages() -> None:
+    """MockLLMAdapter should handle requests with no messages."""
+    adapter = MockLLMAdapter(default_response="fallback")
+    from pillar6.types import LLMRequest
+
+    request = LLMRequest(messages=[])
+    response = await adapter.complete(request)
+    assert response.content == "fallback"

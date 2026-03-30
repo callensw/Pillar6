@@ -88,3 +88,28 @@ async def test_agent_error_handling() -> None:
 
     with pytest.raises(Pillar6Error, match="routing failed"):
         await agent.run("test")
+
+
+async def test_agent_budget_tracking_with_mock_llm() -> None:
+    """Verify that running an agent with an LLM records token usage in guardrails."""
+    from pillar6.core.eval import MockLLMAdapter
+
+    config = Pillar6Config(
+        security=SecurityConfig(token_budget_per_agent=1_000_000),
+    )
+    llm = MockLLMAdapter(
+        responses={"hello": "Hi there!"},
+        default_response="OK",
+    )
+    agent = BaseAgent(config=config, llm=llm)
+    await agent.run("hello")
+    # After a run, usage should be tracked
+    usage = agent.guardrails._usage.get(agent.agent_id, 0)
+    assert usage > 0, "Token usage should be recorded after a run"
+
+
+async def test_agent_empty_task() -> None:
+    """An empty task should still succeed (no special handling needed)."""
+    agent = BaseAgent(config=Pillar6Config())
+    result = await agent.run("")
+    assert "[echo]" in result

@@ -209,7 +209,7 @@ class DefaultRouter(Router):
         chain = self._fallbacks.get(failed_model)
         if not chain:
             return None
-        return chain[0] if chain else None
+        return chain[0]
 
     async def get_next_fallback(self, failed_model: str, already_tried: list[str]) -> str | None:
         """Return the next untried fallback for a model.

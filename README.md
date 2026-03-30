@@ -43,12 +43,12 @@ from pillar6.core.eval import MockLLMAdapter
 
 async def main():
     llm = MockLLMAdapter(
-        responses={"hello": "Hello! How can I help?"},
-        default_response="I'm not sure about that.",
+        responses={"hello": "Hello! How can I help you today?"},
+        default_response="I'm not sure how to help with that.",
     )
     agent = BaseAgent(config=Pillar6Config(), llm=llm)
     result = await agent.run("hello")
-    print(result)  # "Hello! How can I help?"
+    print(result)  # "Hello! How can I help you today?"
 
 asyncio.run(main())
 ```

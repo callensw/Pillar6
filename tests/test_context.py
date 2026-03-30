@@ -229,3 +229,18 @@ async def test_get_context_ordering() -> None:
     assert priorities.index(Priority.SYSTEM) < priorities.index(Priority.RECENT)
     assert priorities.index(Priority.RECENT) < priorities.index(Priority.RETRIEVED)
     assert priorities.index(Priority.RETRIEVED) < priorities.index(Priority.EPHEMERAL)
+
+
+async def test_inject_unicode_content() -> None:
+    mgr = DefaultContextManager(ContextConfig(default_token_budget=500))
+    await mgr.inject("a", "Hello \U0001f30d \u4f60\u597d \u00e9\u00e8\u00ea", Priority.RECENT)
+    messages = await mgr.get_context("a")
+    assert len(messages) == 1
+    assert "\U0001f30d" in messages[0].content
+
+
+async def test_get_context_unknown_agent() -> None:
+    """Getting context for a non-existent agent returns empty list."""
+    mgr = DefaultContextManager(ContextConfig(default_token_budget=500))
+    messages = await mgr.get_context("nonexistent")
+    assert messages == []

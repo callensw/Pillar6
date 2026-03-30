@@ -247,6 +247,7 @@ class BaseAgent:
 
             # --- COST TRACKING ---
             await self.router.track_cost(self._agent_id, response.model, response.usage)
+            self.guardrails.record_usage(self._agent_id, response.usage.total_tokens)
 
             # --- SECURITY: output check ---
             output_check = await self.guardrails.check_output(response.content)
