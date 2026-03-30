@@ -1,6 +1,10 @@
 # Pillar6
 
-**The production framework for agentic AI. Six pillars. Zero guesswork.**
+**Production infrastructure for agentic AI. Any framework. Full visibility.**
+
+Add observability, security, cost tracking, and evaluation to your AI agents
+in one line of code. Works with LangChain, CrewAI, AutoGen, raw SDKs, or
+any custom agent.
 
 [![PyPI version](https://img.shields.io/pypi/v/pillar6)](https://pypi.org/project/pillar6/)
 [![Python](https://img.shields.io/pypi/pyversions/pillar6)](https://pypi.org/project/pillar6/)
@@ -9,20 +13,84 @@
 
 ---
 
-## The Six Pillars
+## The Problem
 
-| # | Pillar | Description |
-|---|--------|-------------|
-| 1 | **Context Management** | Intelligent context window management with sliding window, summarization, priority tagging, and persistence |
-| 2 | **Tool Orchestration** | Tool registration, validation, retries, rate limiting, parallel execution, and circuit breakers |
-| 3 | **Security & Guardrails** | Permissions, input sanitization, output validation, prompt injection detection, cost guardrails, and audit trail |
-| 4 | **Efficiency & Routing** | Multi-model routing, fallback chains, semantic caching, cost tracking, and latency-aware routing |
-| 5 | **Observability** | Distributed tracing, structured logging, metric emission, execution replay, and trace export |
-| 6 | **Testing & Evaluation** | Mock harnesses, golden dataset eval, scoring heuristics, regression detection, and chaos testing |
+Building AI agents is easy. Running them in production is hard. You need
+observability to debug failures, security to prevent prompt injection, cost
+tracking to avoid budget blowouts, and evaluation to catch regressions.
+Pillar6 gives you all of this without rewriting your agents.
 
-## Agent Patterns
+## Quick Start
 
-Pillar6 ships with three production-ready agent patterns:
+### Wrap any function
+
+```python
+from pillar6 import pillar6_wrap
+
+async def my_agent(query: str) -> str:
+    # your existing agent code
+    ...
+
+agent = pillar6_wrap(my_agent)
+result = await agent("What is quantum computing?")
+
+# That's it. You now have tracing, cost tracking, and security.
+print(await agent.traces.get_trace(agent.last_workflow_id))
+```
+
+### Monitor a raw SDK client
+
+```python
+from anthropic import AsyncAnthropic
+from pillar6.wrappers.sdk import wrap_client
+
+client = wrap_client(AsyncAnthropic())
+# Use exactly like normal — now with production monitoring
+response = await client.messages.create(
+    model="claude-sonnet-4-20250514",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+```
+
+### Wrap a LangChain chain
+
+```python
+from pillar6.wrappers.langchain import wrap_langchain
+
+production_chain = wrap_langchain(my_chain)
+result = await production_chain.ainvoke({"query": "..."})
+```
+
+## What You Get
+
+| Problem | How Pillar6 solves it |
+|---------|----------------------|
+| **See what your agents are doing** | Distributed tracing, structured logs, execution replay |
+| **Control costs** | Real-time cost tracking per agent, model routing, budget guardrails |
+| **Stay secure** | Prompt injection detection, permission scoping, input/output validation |
+| **Test with confidence** | Deterministic mocks, golden datasets, LLM-as-judge, chaos testing |
+| **Manage context** | Token budgets, priority-based eviction, session persistence |
+| **Orchestrate tools** | Retries, circuit breakers, rate limiting, parallel execution |
+
+## Works With
+
+- **LangChain / LangGraph** — `wrap_langchain(chain)`
+- **CrewAI** — `wrap_crew(crew)`
+- **Anthropic SDK** — `wrap_client(AsyncAnthropic())`
+- **OpenAI SDK** — `wrap_client(OpenAI())`
+- **Any Python function** — `pillar6_wrap(my_func)`
+
+## Advanced: Build Agents From Scratch
+
+Pillar6 also includes full agent patterns for those who want a complete
+framework experience:
+
+```python
+from pillar6 import BaseAgent, Pillar6Config
+from pillar6.agents.patterns import ReActAgent, PlanExecuteAgent, SupervisorAgent
+```
+
+Three production-ready patterns:
 
 | Pattern | Description |
 |---------|-------------|
@@ -30,120 +98,55 @@ Pillar6 ships with three production-ready agent patterns:
 | **Plan-Execute** | Plan upfront, execute steps, replan on failure |
 | **Supervisor** | Delegate to specialist sub-agents, synthesise results |
 
-## Quick Start
-
-```bash
-pip install pillar6
-```
-
-```python
-import asyncio
-from pillar6 import BaseAgent, Pillar6Config
-from pillar6.core.eval import MockLLMAdapter
-
-async def main():
-    llm = MockLLMAdapter(
-        responses={"hello": "Hello! How can I help you today?"},
-        default_response="I'm not sure how to help with that.",
-    )
-    agent = BaseAgent(config=Pillar6Config(), llm=llm)
-    result = await agent.run("hello")
-    print(result)  # "Hello! How can I help you today?"
-
-asyncio.run(main())
-```
-
-### Using Agent Patterns
-
-```python
-from pillar6.agents.patterns import ReActAgent, ReActConfig
-
-agent = ReActAgent(
-    react_config=ReActConfig(max_steps=5),
-    config=Pillar6Config(),
-    llm=llm,
-)
-result = await agent.run("Search for and summarise recent AI news")
-```
+See the [documentation](https://callensw.github.io/Pillar6) for full guides.
 
 ## Reference App: Multi-Agent Research Assistant
 
-A complete demo of all six pillars in action. A team of AI agents autonomously
-researches a question and produces a structured report, with a live React
-dashboard for real-time observability.
-
-```
-User Question → Conductor (Supervisor) → Researchers (ReAct) → Analyst (PlanExecute) → Report
-```
-
-<!-- Screenshot placeholder: ![Dashboard](docs/assets/dashboard-screenshot.png) -->
-
-**Run it:**
+A complete demo with a team of AI agents that autonomously research a question
+and produce a structured report, with a live React dashboard.
 
 ```bash
 cd examples/research-assistant
 PYTHONPATH=../../:. python main.py "What are the latest developments in quantum computing?"
 ```
 
-**Start the dashboard:**
-
-```bash
-PYTHONPATH=../../:. python main.py --serve        # API at :8000
-cd dashboard && npm install && npm run dev  # Dashboard at :5173
-```
-
-See [examples/research-assistant/README.md](examples/research-assistant/README.md) for full setup instructions.
+See [examples/research-assistant/](examples/research-assistant/) for full setup.
 
 ## Installation
-
-**From PyPI:**
 
 ```bash
 pip install pillar6
 ```
 
-**From source:**
+With optional integrations:
 
 ```bash
-git clone https://github.com/callensw/pillar6.git
-cd pillar6
+pip install pillar6[langchain]   # LangChain support
+pip install pillar6[crewai]      # CrewAI support
+pip install pillar6[all]         # Everything
+```
+
+From source:
+
+```bash
+git clone https://github.com/callensw/Pillar6.git
+cd Pillar6
 pip install -e ".[dev]"
 ```
-
-## Documentation
-
-Full documentation is available via MkDocs:
-
-```bash
-pip install -e ".[docs]"
-mkdocs serve    # http://localhost:8000
-```
-
-See the [docs/](docs/) directory for all documentation pages.
 
 ## Development
 
 ```bash
-# Install dev dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest
-
-# Lint and format
-ruff check .
-ruff format .
-
-# Type check
-mypy pillar6
-
-# Build docs
-mkdocs build --strict
+pytest                 # Run tests
+ruff check .           # Lint
+ruff format .          # Format
+mypy pillar6           # Type check
+mkdocs serve           # Docs at http://localhost:8000
 ```
 
 ## Contributing
 
-We welcome contributions! Please see [docs/contributing.md](docs/contributing.md) for guidelines.
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 

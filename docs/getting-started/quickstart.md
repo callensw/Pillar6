@@ -1,6 +1,10 @@
-# Quickstart
+# Build Agents from Scratch
 
-Build a working agent with tools in 5 minutes.
+Build a working agent with tools using Pillar6's built-in patterns.
+
+!!! tip
+    If you already have agents built with another framework, see
+    [Add Pillar6 to Existing Agents](wrapping.md) instead — it's faster.
 
 ## 1. Create a Tool
 
@@ -100,6 +104,6 @@ See the [Patterns](../patterns/react.md) section for full guides on each pattern
 
 ## Next Steps
 
-- [Concepts](concepts.md) -- Understand the six-pillar architecture
-- [Context Management](../pillars/context-management.md) -- Deep dive into context handling
-- [Tool Orchestration](../pillars/tool-orchestration.md) -- Advanced tool features
+- [Concepts](concepts.md) — Understand the six production pillars
+- [Context Management](../pillars/context-management.md) — Deep dive into context handling
+- [Tool Orchestration](../pillars/tool-orchestration.md) — Advanced tool features

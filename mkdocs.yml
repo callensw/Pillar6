@@ -1,8 +1,8 @@
 site_name: Pillar6
-site_description: The production framework for agentic AI. Six pillars. Zero guesswork.
-site_url: https://callensw.github.io/pillar6/
-repo_url: https://github.com/callensw/pillar6
-repo_name: callensw/pillar6
+site_description: Production infrastructure for agentic AI. Any framework. Full visibility.
+site_url: https://callensw.github.io/Pillar6/
+repo_url: https://github.com/callensw/Pillar6
+repo_name: callensw/Pillar6
 
 theme:
   name: material
@@ -52,9 +52,15 @@ plugins:
 nav:
   - Home: index.md
   - Getting Started:
+    - Add to Existing Agents: getting-started/wrapping.md
     - Installation: getting-started/installation.md
-    - Quickstart: getting-started/quickstart.md
+    - Build from Scratch: getting-started/quickstart.md
     - Concepts: getting-started/concepts.md
+  - Integrations:
+    - LangChain: integrations/langchain.md
+    - CrewAI: integrations/crewai.md
+    - Anthropic SDK: integrations/anthropic-sdk.md
+    - OpenAI SDK: integrations/openai-sdk.md
   - Pillars:
     - Context Management: pillars/context-management.md
     - Tool Orchestration: pillars/tool-orchestration.md

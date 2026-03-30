@@ -1,59 +1,60 @@
 # Pillar6
 
-**The production framework for agentic AI. Six pillars. Zero guesswork.**
+**Production infrastructure for agentic AI. Any framework. Full visibility.**
 
-Pillar6 is an opinionated Python framework for building production-grade AI agents.
-It provides six architectural pillars that every agent system needs, wired together
-with sensible defaults so you can go from idea to production in minutes.
+Add observability, security, cost tracking, and evaluation to any AI agent
+in one line of code. Works with LangChain, CrewAI, AutoGen, raw SDKs, or
+any custom agent.
 
 ---
 
-## The Six Pillars
-
-| Pillar | What it does |
-|--------|-------------|
-| **Context Management** | Token budgets, priority buckets, sliding window, compression |
-| **Tool Orchestration** | Schema validation, circuit breakers, retries, caching, parallel execution |
-| **Security & Guardrails** | Input/output validation, permissions, budget enforcement, audit trail |
-| **Efficiency & Routing** | Model registry, constraint-based routing, fallback chains, cost tracking |
-| **Observability** | Distributed tracing, structured logging, metrics, trace export |
-| **Testing & Evaluation** | Mock adapters, chaos testing, scoring, dataset-driven eval, comparison |
-
-## Quick Install
-
-```bash
-pip install pillar6
-```
-
-## Minimal Example
+## Quick Start
 
 ```python
-import asyncio
-from pillar6 import BaseAgent, Pillar6Config
-from pillar6.core.eval import MockLLMAdapter
+from pillar6 import pillar6_wrap
 
-async def main():
-    llm = MockLLMAdapter(
-        responses={"hello": "Hello! How can I help you today?"},
-        default_response="I'm not sure how to help with that.",
-    )
-    agent = BaseAgent(config=Pillar6Config(), llm=llm)
-    result = await agent.run("hello")
-    print(result)  # "Hello! How can I help you today?"
+async def my_agent(query: str) -> str:
+    # your existing agent code
+    ...
 
-asyncio.run(main())
+agent = pillar6_wrap(my_agent)
+result = await agent("What is quantum computing?")
+
+# You now have tracing, cost tracking, and security.
+print(await agent.traces.get_trace(agent.last_workflow_id))
 ```
 
-## Agent Patterns
+## What You Get
 
-Pillar6 ships with three production-ready agent patterns:
+| Problem | How Pillar6 solves it |
+|---------|----------------------|
+| **See what your agents are doing** | Distributed tracing, structured logs, execution replay |
+| **Control costs** | Real-time cost tracking per agent, model routing, budget guardrails |
+| **Stay secure** | Prompt injection detection, permission scoping, input/output validation |
+| **Test with confidence** | Deterministic mocks, golden datasets, LLM-as-judge, chaos testing |
+| **Manage context** | Token budgets, priority-based eviction, session persistence |
+| **Orchestrate tools** | Retries, circuit breakers, rate limiting, parallel execution |
 
-- [**ReAct**](patterns/react.md) -- Reasoning + Acting loop for step-by-step problem solving
-- [**Plan-Execute**](patterns/plan-execute.md) -- Plan upfront, execute sequentially, replan on failure
-- [**Supervisor**](patterns/supervisor.md) -- Delegate to specialist sub-agents and synthesise results
+## Works With
+
+- **LangChain / LangGraph** — `wrap_langchain(chain)`
+- **CrewAI** — `wrap_crew(crew)`
+- **Anthropic SDK** — `wrap_client(AsyncAnthropic())`
+- **OpenAI SDK** — `wrap_client(OpenAI())`
+- **Any Python function** — `pillar6_wrap(my_func)`
+
+## Build Agents From Scratch
+
+Pillar6 also includes full agent patterns for those who want a complete
+framework experience:
+
+- [**ReAct**](patterns/react.md) — Reasoning + Acting loop for step-by-step problem solving
+- [**Plan-Execute**](patterns/plan-execute.md) — Plan upfront, execute sequentially, replan on failure
+- [**Supervisor**](patterns/supervisor.md) — Delegate to specialist sub-agents and synthesise results
 
 ## Next Steps
 
-- [Installation](getting-started/installation.md) -- Set up your environment
-- [Quickstart](getting-started/quickstart.md) -- Build your first agent in 5 minutes
-- [Concepts](getting-started/concepts.md) -- Understand the six-pillar architecture
+- [Add Pillar6 to Existing Agents](getting-started/wrapping.md) — The fastest path to production
+- [Installation](getting-started/installation.md) — Set up your environment
+- [Build from Scratch](getting-started/quickstart.md) — Create agents using Pillar6 patterns
+- [Concepts](getting-started/concepts.md) — Understand the production pillars

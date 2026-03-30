@@ -16,7 +16,7 @@ import pillar6
 
 app = typer.Typer(
     name="pillar6",
-    help="Pillar6 — The production framework for agentic AI.",
+    help="Pillar6 — Production infrastructure for agentic AI.",
     add_completion=False,
 )
 
