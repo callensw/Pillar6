@@ -3,16 +3,23 @@ import { getSystemStats, type SystemStats } from "../api/client";
 
 export default function SystemOverview() {
   const [stats, setStats] = useState<SystemStats | null>(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     getSystemStats()
       .then(setStats)
-      .catch(() => {});
+      .catch((err) => setError(err.message || "Failed to load stats"));
   }, []);
 
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-white">System Overview</h1>
+
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-4 text-sm">
+          {error}
+        </div>
+      )}
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

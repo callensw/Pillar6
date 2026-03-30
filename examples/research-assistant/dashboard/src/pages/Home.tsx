@@ -14,19 +14,22 @@ export default function Home() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<ResearchJob[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     listJobs()
       .then((data) => setJobs(data.jobs || []))
-      .catch(() => {});
+      .catch((err) => setError(err.message || "Failed to load jobs"));
   }, []);
 
   const handleSubmit = async (question: string) => {
     setLoading(true);
+    setError("");
     try {
       const result = await submitResearch(question);
       navigate(`/research/${result.job_id}`);
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to submit");
       setLoading(false);
     }
   };
@@ -43,6 +46,13 @@ export default function Home() {
           research, analyse, and produce a structured report.
         </p>
       </div>
+
+      {/* Error */}
+      {error && (
+        <div className="max-w-3xl mx-auto bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-4 text-sm">
+          {error}
+        </div>
+      )}
 
       {/* Search form */}
       <div className="max-w-3xl mx-auto">

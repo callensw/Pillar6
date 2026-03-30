@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import sys
+from typing import Any
 
 
 def _parse_args() -> argparse.Namespace:
@@ -59,7 +60,7 @@ async def _run_cli(question: str) -> None:
     print(f"  Research Question: {question}")
     print(f"{'=' * 60}\n")
 
-    async def on_event(job_id: str, event: dict) -> None:  # type: ignore[type-arg]
+    async def on_event(job_id: str, event: dict[str, Any]) -> None:
         agent = event.get("agent", "system")
         msg = event.get("message", "")
         etype = event.get("event_type", "")
@@ -103,7 +104,7 @@ async def _run_interactive() -> None:
             print("Goodbye!")
             break
 
-        async def on_event(job_id: str, event: dict) -> None:  # type: ignore[type-arg]
+        async def on_event(job_id: str, event: dict[str, Any]) -> None:
             agent = event.get("agent", "system")
             msg = event.get("message", "")
             print(f"  [{agent}] {msg}")

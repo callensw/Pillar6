@@ -9,12 +9,15 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
+import logging
 from typing import Any
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pipeline import run_research
 from storage import Storage, create_storage
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Pillar6 Research Assistant",
@@ -61,22 +64,26 @@ async def create_research(body: dict[str, Any]) -> dict[str, Any]:
     """
     question = body.get("question", "")
     if not question:
-        return {"error": "Question is required"}
+        raise HTTPException(status_code=422, detail="Question is required")
 
     storage = _get_storage()
     job = await storage.create_job(question)
 
     # Run the research in the background
     async def _run() -> None:
-        async def on_event(job_id: str, event: dict[str, Any]) -> None:
-            # Broadcast to WebSocket clients
-            conns = _ws_connections.get(job_id, [])
-            msg = json.dumps(event, default=str)
-            for ws in conns:
-                with contextlib.suppress(Exception):
-                    await ws.send_text(msg)
+        try:
 
-        await run_research(question, storage, on_event=on_event)
+            async def on_event(job_id: str, event: dict[str, Any]) -> None:
+                # Broadcast to WebSocket clients
+                conns = _ws_connections.get(job_id, [])
+                msg = json.dumps(event, default=str)
+                for ws in conns:
+                    with contextlib.suppress(Exception):
+                        await ws.send_text(msg)
+
+            await run_research(question, storage, on_event=on_event)
+        except Exception:
+            logger.exception("Background research task failed for job %s", job.id)
 
     asyncio.create_task(_run())
     return {"job_id": job.id, "status": "pending"}
@@ -88,7 +95,7 @@ async def get_research(job_id: str) -> dict[str, Any]:
     storage = _get_storage()
     job = await storage.get_job(job_id)
     if not job:
-        return {"error": "Job not found"}
+        raise HTTPException(status_code=404, detail="Job not found")
     return job.to_dict()
 
 
@@ -98,7 +105,7 @@ async def get_trace(job_id: str) -> dict[str, Any]:
     storage = _get_storage()
     job = await storage.get_job(job_id)
     if not job:
-        return {"error": "Job not found"}
+        raise HTTPException(status_code=404, detail="Job not found")
     return {"job_id": job_id, "trace": job.trace}
 
 
@@ -108,7 +115,7 @@ async def get_costs(job_id: str) -> dict[str, Any]:
     storage = _get_storage()
     job = await storage.get_job(job_id)
     if not job:
-        return {"error": "Job not found"}
+        raise HTTPException(status_code=404, detail="Job not found")
     return {"job_id": job_id, "costs": job.costs}
 
 
@@ -164,6 +171,8 @@ async def websocket_endpoint(websocket: WebSocket, job_id: str) -> None:
             await websocket.receive_text()
     except WebSocketDisconnect:
         pass
+    except Exception:
+        logger.exception("WebSocket error for job %s", job_id)
     finally:
         conns = _ws_connections.get(job_id, [])
         if websocket in conns:

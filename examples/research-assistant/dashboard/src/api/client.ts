@@ -34,44 +34,46 @@ export interface SystemStats {
   avg_completion_time_s: number;
 }
 
+async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, init);
+  if (!res.ok) {
+    throw new Error(`API error: ${res.status} ${res.statusText}`);
+  }
+  return res.json() as Promise<T>;
+}
+
 export async function submitResearch(
   question: string
 ): Promise<{ job_id: string }> {
-  const res = await fetch(`${API_BASE}/research`, {
+  return fetchJson(`${API_BASE}/research`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ question }),
   });
-  return res.json();
 }
 
 export async function getResearch(id: string): Promise<ResearchJob> {
-  const res = await fetch(`${API_BASE}/research/${id}`);
-  return res.json();
+  return fetchJson(`${API_BASE}/research/${id}`);
 }
 
 export async function getTrace(
   id: string
 ): Promise<{ job_id: string; trace: Record<string, unknown> }> {
-  const res = await fetch(`${API_BASE}/research/${id}/trace`);
-  return res.json();
+  return fetchJson(`${API_BASE}/research/${id}/trace`);
 }
 
 export async function getCosts(
   id: string
 ): Promise<{ job_id: string; costs: CostData }> {
-  const res = await fetch(`${API_BASE}/research/${id}/costs`);
-  return res.json();
+  return fetchJson(`${API_BASE}/research/${id}/costs`);
 }
 
 export async function listJobs(): Promise<{ jobs: ResearchJob[] }> {
-  const res = await fetch(`${API_BASE}/jobs`);
-  return res.json();
+  return fetchJson(`${API_BASE}/jobs`);
 }
 
 export async function getSystemStats(): Promise<SystemStats> {
-  const res = await fetch(`${API_BASE}/system`);
-  return res.json();
+  return fetchJson(`${API_BASE}/system`);
 }
 
 export function connectWebSocket(
@@ -89,8 +91,12 @@ export function connectWebSocket(
       const event = JSON.parse(msg.data) as AgentEvent;
       onEvent(event);
     } catch {
-      // ignore parse errors
+      console.warn("Failed to parse WebSocket message");
     }
+  };
+
+  ws.onerror = () => {
+    console.warn("WebSocket error for job", jobId);
   };
 
   return ws;

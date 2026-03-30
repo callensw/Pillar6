@@ -6,8 +6,11 @@ collect traces and costs, and store the result.
 
 from __future__ import annotations
 
+import logging
 import time
 from typing import TYPE_CHECKING, Any
+
+logger = logging.getLogger(__name__)
 
 from agents import build_research_team
 
@@ -158,8 +161,8 @@ async def run_research(
                 trace_data[wf_id] = await obs.export_trace(wf_id)
             cost_summary = await team.router.get_cost_summary()
             cost_data = cost_summary.model_dump()
-        except Exception:
-            pass  # Non-critical
+        except Exception as trace_exc:
+            logger.debug("Failed to collect traces/costs: %s", trace_exc)
 
         job.status = "complete"
         job.result = result
