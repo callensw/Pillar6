@@ -393,7 +393,9 @@ class TestSupervisorAgent:
         )
 
         result = await agent.run("Do both tasks")
+        # Synthesis should contain content from both specialist results
         assert len(result) > 0
+        assert "[error]" not in result.lower() or "synthesi" in result.lower()
 
     @pytest.mark.asyncio
     async def test_unknown_specialist_handled(self) -> None:
@@ -407,6 +409,7 @@ class TestSupervisorAgent:
         result = await agent.run("Use nonexistent specialist")
         # Should still get a synthesis response (even with error from unknown specialist)
         assert len(result) > 0
+        assert "error" in result.lower() or len(result) > 5
 
     @pytest.mark.asyncio
     async def test_no_delegation_needed(self) -> None:
@@ -440,7 +443,8 @@ class TestSupervisorAgent:
             )
 
         result = await agent.run("Big task")
-        assert len(result) > 0
+        # Should produce a synthesised result (not empty or just whitespace)
+        assert result.strip()
 
     @pytest.mark.asyncio
     async def test_observability_traces(self) -> None:

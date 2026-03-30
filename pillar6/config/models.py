@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from pillar6.types import ModelTier, RetryStrategy
 
@@ -30,6 +30,19 @@ class ContextConfig(BaseModel):
         ge=1,
         description="Number of most-recent messages to keep during compression.",
     )
+
+    @model_validator(mode="after")
+    def _check_budget_fractions(self) -> ContextConfig:
+        total = (
+            self.system_budget_fraction
+            + self.recent_budget_fraction
+            + self.retrieved_budget_fraction
+            + self.ephemeral_budget_fraction
+        )
+        if not (0.99 <= total <= 1.01):
+            msg = f"Budget fractions must sum to 1.0, got {total:.2f}"
+            raise ValueError(msg)
+        return self
 
 
 class ToolConfig(BaseModel):

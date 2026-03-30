@@ -244,3 +244,14 @@ async def test_get_context_unknown_agent() -> None:
     mgr = DefaultContextManager(ContextConfig(default_token_budget=500))
     messages = await mgr.get_context("nonexistent")
     assert messages == []
+
+
+def test_budget_fractions_must_sum_to_one() -> None:
+    """ContextConfig should reject budget fractions that don't sum to 1.0."""
+    with pytest.raises(ValueError, match="Budget fractions must sum to 1.0"):
+        ContextConfig(
+            system_budget_fraction=0.5,
+            recent_budget_fraction=0.5,
+            retrieved_budget_fraction=0.5,
+            ephemeral_budget_fraction=0.5,
+        )

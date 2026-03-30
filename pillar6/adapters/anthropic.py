@@ -6,6 +6,7 @@ official ``anthropic`` SDK, keeping Pillar6's dependency footprint small.
 
 from __future__ import annotations
 
+import json
 import os
 from typing import TYPE_CHECKING, Any
 
@@ -106,8 +107,6 @@ class AnthropicAdapter(LLMAdapter):
             resp.raise_for_status()
             async for line in resp.aiter_lines():
                 if line.startswith("data: "):
-                    import json
-
                     event = json.loads(line[6:])
                     if event.get("type") == "content_block_delta":
                         delta = event.get("delta", {})
