@@ -6,10 +6,13 @@ import { getTrace } from "../api/client";
 export default function TraceDetail() {
   const { id } = useParams<{ id: string }>();
   const [trace, setTrace] = useState<Record<string, unknown>>({});
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!id) return;
-    getTrace(id).then((data) => setTrace(data.trace || {}));
+    getTrace(id)
+      .then((data) => setTrace(data.trace || {}))
+      .catch((err) => setError(err.message || "Failed to load trace"));
   }, [id]);
 
   return (
@@ -45,6 +48,12 @@ export default function TraceDetail() {
           Costs
         </Link>
       </div>
+
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-4 text-sm">
+          {error}
+        </div>
+      )}
 
       <TraceView trace={trace} />
     </div>

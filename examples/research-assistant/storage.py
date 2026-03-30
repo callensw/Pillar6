@@ -6,6 +6,7 @@ Otherwise, falls back to a thread-safe in-memory store with a warning.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
 import time
@@ -71,10 +72,11 @@ class Storage(ABC):
 
 
 class InMemoryStorage(Storage):
-    """Thread-safe in-memory storage."""
+    """Async-safe in-memory storage."""
 
     def __init__(self) -> None:
         self._jobs: dict[str, ResearchJob] = {}
+        self._lock = asyncio.Lock()
 
     async def create_job(self, question: str) -> ResearchJob:
         job = ResearchJob(
@@ -83,23 +85,28 @@ class InMemoryStorage(Storage):
             status="pending",
             created_at=time.time(),
         )
-        self._jobs[job.id] = job
+        async with self._lock:
+            self._jobs[job.id] = job
         return job
 
     async def get_job(self, job_id: str) -> ResearchJob | None:
-        return self._jobs.get(job_id)
+        async with self._lock:
+            return self._jobs.get(job_id)
 
     async def update_job(self, job: ResearchJob) -> None:
-        self._jobs[job.id] = job
+        async with self._lock:
+            self._jobs[job.id] = job
 
     async def list_jobs(self, limit: int = 20) -> list[ResearchJob]:
-        jobs = sorted(self._jobs.values(), key=lambda j: j.created_at, reverse=True)
-        return jobs[:limit]
+        async with self._lock:
+            jobs = sorted(self._jobs.values(), key=lambda j: j.created_at, reverse=True)
+            return jobs[:limit]
 
     async def add_event(self, job_id: str, event: dict[str, Any]) -> None:
-        job = self._jobs.get(job_id)
-        if job:
-            job.events.append(event)
+        async with self._lock:
+            job = self._jobs.get(job_id)
+            if job:
+                job.events.append(event)
 
 
 class SupabaseStorage(Storage):

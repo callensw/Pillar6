@@ -18,8 +18,8 @@ interface Props {
 }
 
 export default function CostCharts({ costs }: Props) {
-  const totalCost = costs.total_cost_usd || 0;
-  const totalTokens = costs.total_tokens || 0;
+  const totalCost = Number.isFinite(costs.total_cost_usd) ? costs.total_cost_usd! : 0;
+  const totalTokens = Number.isFinite(costs.total_tokens) ? costs.total_tokens! : 0;
 
   const byModel = Object.entries(costs.by_model || {}).map(
     ([name, cost], i) => ({
@@ -40,7 +40,7 @@ export default function CostCharts({ costs }: Props) {
   return (
     <div className="space-y-8">
       {/* Summary cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-navy-800 rounded-lg p-6 border border-navy-700 text-center">
           <p className="text-slate-500 text-sm">Total Cost</p>
           <p className="text-3xl font-bold text-white mt-2">
@@ -56,7 +56,7 @@ export default function CostCharts({ costs }: Props) {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Cost by Model */}
         {byModel.length > 0 && (
           <div className="bg-navy-800 rounded-lg p-6 border border-navy-700">

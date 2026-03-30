@@ -20,15 +20,18 @@ export default function ResearchDetail() {
   const { id } = useParams<{ id: string }>();
   const [job, setJob] = useState<ResearchJob | null>(null);
   const [events, setEvents] = useState<AgentEvent[]>([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!id) return;
 
     // Fetch initial data
-    getResearch(id).then((data) => {
-      setJob(data);
-      setEvents(data.events || []);
-    });
+    getResearch(id)
+      .then((data) => {
+        setJob(data);
+        setEvents(data.events || []);
+      })
+      .catch((err) => setError(err.message || "Failed to load research"));
 
     // Connect WebSocket for real-time updates
     const ws = connectWebSocket(id, (event) => {
@@ -36,12 +39,17 @@ export default function ResearchDetail() {
     });
 
     // Poll for status updates
-    const interval = setInterval(async () => {
-      const data = await getResearch(id);
-      setJob(data);
-      if (data.status === "complete" || data.status === "failed") {
-        clearInterval(interval);
-      }
+    const interval = setInterval(() => {
+      getResearch(id)
+        .then((data) => {
+          setJob(data);
+          if (data.status === "complete" || data.status === "failed") {
+            clearInterval(interval);
+          }
+        })
+        .catch(() => {
+          /* polling failure is non-fatal */
+        });
     }, 2000);
 
     return () => {
@@ -49,6 +57,14 @@ export default function ResearchDetail() {
       clearInterval(interval);
     };
   }, [id]);
+
+  if (error) {
+    return (
+      <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-4 text-sm">
+        {error}
+      </div>
+    );
+  }
 
   if (!job) {
     return (

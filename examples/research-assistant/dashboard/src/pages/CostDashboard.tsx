@@ -6,10 +6,13 @@ import { getCosts, type CostData } from "../api/client";
 export default function CostDashboard() {
   const { id } = useParams<{ id: string }>();
   const [costs, setCosts] = useState<CostData>({});
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!id) return;
-    getCosts(id).then((data) => setCosts(data.costs || {}));
+    getCosts(id)
+      .then((data) => setCosts(data.costs || {}))
+      .catch((err) => setError(err.message || "Failed to load costs"));
   }, [id]);
 
   return (
@@ -45,6 +48,12 @@ export default function CostDashboard() {
           Costs
         </Link>
       </div>
+
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-4 text-sm">
+          {error}
+        </div>
+      )}
 
       <CostCharts costs={costs} />
     </div>
